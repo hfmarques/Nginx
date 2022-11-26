@@ -1,0 +1,48 @@
+version: '3.4'
+
+services:
+  edge-proxy:
+    image: nginx
+    volumes:
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+    ports:
+      - "80:80"
+    networks:
+      - edge
+        
+  localhost1_1:
+    image: nginxwebapp
+    build:
+      context: .
+      dockerfile: WebApp/Dockerfile
+    hostname: instance1
+    environment:
+      - AppName=localhost1_instance_1
+    networks:
+      - edge
+    
+  localhost1_2:
+    image: nginxwebapp
+    build:
+      context: .
+      dockerfile: WebApp/Dockerfile
+    hostname: instance2
+    environment:
+      - AppName=localhost1_instance_2      
+    networks:
+      - edge
+  
+  localhost2:
+    image: nginxwebapp
+    build:
+      context: .
+      dockerfile: WebApp/Dockerfile
+    hostname: instance1
+    environment:
+      - AppName=localhost2
+    networks:
+      - edge
+        
+networks:
+  edge:
+    driver: bridge
